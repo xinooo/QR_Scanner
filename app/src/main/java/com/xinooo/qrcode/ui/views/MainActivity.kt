@@ -11,6 +11,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun initLayoutView() {
         startActivity(Intent(this, QRCodeScannerActivity::class.java))
+        finish()
     }
 
     override fun initViewData() {

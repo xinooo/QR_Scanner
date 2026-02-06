@@ -30,6 +30,7 @@ class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
     override fun getLayoutId(): Int = R.layout.activity_qrcode_scanner
 
     override fun initLayoutView() {
+        binding.titleBar.setAppTitle(getString(R.string.app_name))
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
