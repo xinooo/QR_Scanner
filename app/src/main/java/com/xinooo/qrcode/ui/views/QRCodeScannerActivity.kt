@@ -1,12 +1,19 @@
 package com.xinooo.qrcode.ui.views
 
+import android.graphics.RectF
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.TransformExperimental
+import androidx.camera.view.transform.CoordinateTransform
+import androidx.camera.view.transform.ImageProxyTransformFactory
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.databinding.ActivityQrcodeScannerBinding
 import com.xinooo.qrcode.ui.BaseActivity
@@ -44,7 +51,11 @@ class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
             }
 
             // 建立 QrAnalyzer
-            qrAnalyzer = QrAnalyzer() { barcode ->
+            qrAnalyzer = QrAnalyzer(
+                barcodeValidator = { barcode, imageProxy ->
+                    isWithinScannerFrame(barcode, imageProxy)
+                }
+            ) { barcode ->
                 val rawValue = barcode.rawValue
                 if (rawValue != null) {
                     onQRCodeScanned(rawValue)
@@ -77,6 +88,51 @@ class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
             }
 
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    @OptIn(TransformExperimental::class)
+    private fun isWithinScannerFrame(barcode: Barcode, imageProxy: ImageProxy): Boolean {
+        val boundingBox = barcode.boundingBox ?: return false
+
+        return try {
+            val factory = ImageProxyTransformFactory()
+            // source transform 是基於 imageProxy.cropRect 的
+            val source = factory.getOutputTransform(imageProxy)
+            val target = binding.previewView.outputTransform ?: return false
+            val coordinateTransform = CoordinateTransform(source, target)
+
+            val barcodeRectF = RectF(boundingBox)
+
+            // 手動扣除 CropRect 的偏移量，座標才能對齊
+            val cropRect = imageProxy.cropRect
+            barcodeRectF.offset(-cropRect.left.toFloat(), -cropRect.top.toFloat())
+
+            // 轉換到 PreviewView 座標系
+            coordinateTransform.mapRect(barcodeRectF)
+
+            // 取得掃描框在 PreviewView 中的相對位置
+            val frameLoc = IntArray(2)
+            binding.scannerFrame.getLocationInWindow(frameLoc)
+            val previewLoc = IntArray(2)
+            binding.previewView.getLocationInWindow(previewLoc)
+
+            val relativeLeft = (frameLoc[0] - previewLoc[0]).toFloat()
+            val relativeTop = (frameLoc[1] - previewLoc[1]).toFloat()
+
+            val frameRectF = RectF(
+                relativeLeft,
+                relativeTop,
+                relativeLeft + binding.scannerFrame.width,
+                relativeTop + binding.scannerFrame.height
+            )
+
+            // 判斷條碼中心點是否在方框內
+            frameRectF.contains(barcodeRectF.centerX(), barcodeRectF.centerY())
+
+        } catch (e: Exception) {
+            Logger.e(TAG, "Coordinate transform failed", e)
+            false
+        }
     }
 
     private fun onQRCodeScanned(result: String) {

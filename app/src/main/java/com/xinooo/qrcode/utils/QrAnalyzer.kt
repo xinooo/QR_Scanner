@@ -8,6 +8,7 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 
 class QrAnalyzer(
+    private val barcodeValidator: ((Barcode, ImageProxy) -> Boolean),
     private val onQrDetected: (Barcode) -> Unit,
 ) : ImageAnalysis.Analyzer {
 
@@ -37,8 +38,14 @@ class QrAnalyzer(
 
                 if (isScanningEnabled && barcodes.isNotEmpty()) {
                     val barcode = barcodes.first()
-                    isScanningEnabled = false // 掃描成功後停止
-                    onQrDetected(barcode)
+                    
+                    // 檢查是否在指定範圍內
+                    val isValid = barcodeValidator.invoke(barcode, imageProxy)
+                    
+                    if (isValid) {
+                        isScanningEnabled = false // 掃描成功後停止
+                        onQrDetected(barcode)
+                    }
                 }
             }
             .addOnFailureListener {
