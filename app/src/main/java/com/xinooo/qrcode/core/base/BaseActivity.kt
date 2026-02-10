@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.core.base
 
 import android.Manifest
 import android.graphics.Rect

@@ -6,6 +6,7 @@ import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import java.util.concurrent.atomic.AtomicBoolean
 
 class QrAnalyzer(
     private val barcodeValidator: ((Barcode, ImageProxy) -> Boolean),
@@ -14,16 +15,21 @@ class QrAnalyzer(
 
     private val scanner = BarcodeScanning.getClient()
 
-    @Volatile
-    private var isScanningEnabled = true
+    private val scanningLock = AtomicBoolean(false)
 
-    fun resumeScanning() {
-        isScanningEnabled = true
+    // 啟動掃描
+    fun enableScanning() {
+        scanningLock.set(false)
+    }
+
+    // 停止掃描
+    fun disableScanning() {
+        scanningLock.set(true)
     }
 
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
-        if (!isScanningEnabled) {
+        if (scanningLock.get()) {
             imageProxy.close()
             return
         }
@@ -34,19 +40,18 @@ class QrAnalyzer(
         val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
         scanner.process(image)
             .addOnSuccessListener { barcodes ->
-                if (!isScanningEnabled) return@addOnSuccessListener
+                if (barcodes.isEmpty()) return@addOnSuccessListener
 
-                if (isScanningEnabled && barcodes.isNotEmpty()) {
-                    val barcode = barcodes.first()
-                    
-                    // 檢查是否在指定範圍內
-                    val isValid = barcodeValidator.invoke(barcode, imageProxy)
-                    
-                    if (isValid) {
-                        isScanningEnabled = false // 掃描成功後停止
-                        onQrDetected(barcode)
-                    }
+                val barcode = barcodes.first()
+
+                // 檢查是否在指定範圍內
+                val isValid = barcodeValidator.invoke(barcode, imageProxy)
+                if (!isValid) return@addOnSuccessListener
+
+                if (scanningLock.compareAndSet(false, true)) {
+                    onQrDetected(barcode)
                 }
+
             }
             .addOnFailureListener {
                 Logger.e("QrAnalyzer", "Barcode scanning failed", it)

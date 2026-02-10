@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui.views
+package com.xinooo.qrcode.ui
 
 import android.graphics.RectF
 import android.widget.Toast
@@ -13,63 +13,61 @@ import androidx.camera.view.TransformExperimental
 import androidx.camera.view.transform.CoordinateTransform
 import androidx.camera.view.transform.ImageProxyTransformFactory
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.mlkit.vision.barcode.common.Barcode
+import com.webrtc.cc.ui.BaseFragment
 import com.xinooo.qrcode.R
-import com.xinooo.qrcode.databinding.ActivityQrcodeScannerBinding
-import com.xinooo.qrcode.ui.BaseActivity
+import com.xinooo.qrcode.databinding.FragmentQrcodeScannerBinding
 import com.xinooo.qrcode.utils.Logger
 import com.xinooo.qrcode.utils.QrAnalyzer
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
+class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
 
-    private lateinit var cameraExecutor: ExecutorService
-    private var qrAnalyzer: QrAnalyzer? = null
+    private val cameraExecutor: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
+    private val preview by lazy { Preview.Builder().build() }
+    private val qrAnalyzer by lazy {
+        QrAnalyzer(
+            barcodeValidator = { barcode, imageProxy ->
+                isWithinScannerFrame(barcode, imageProxy)
+            }
+        ) { barcode ->
+            val rawValue = barcode.rawValue
+            if (rawValue != null) {
+                onQRCodeScanned(rawValue)
+            }
+        }
+    }
+    private val imageAnalyzer by lazy {
+        ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+    }
 
-    override fun getLayoutId(): Int = R.layout.activity_qrcode_scanner
+    override fun getLayoutId(): Int {
+        return R.layout.fragment_qrcode_scanner
+    }
 
     override fun initLayoutView() {
         binding.titleBar.setAppTitle(getString(R.string.app_name))
-        cameraExecutor = Executors.newSingleThreadExecutor()
+        binding.titleBar.setLeftBtnVisibility(false)
     }
 
     override fun initViewData() {
-        binding.previewView.post {
-            startCamera()
-        }
+        startCamera()
     }
 
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            // Preview
-            val preview = Preview.Builder().build().also {
-                it.surfaceProvider = binding.previewView.surfaceProvider
-            }
+            preview.surfaceProvider = binding.previewView.surfaceProvider
 
-            // 建立 QrAnalyzer
-            qrAnalyzer = QrAnalyzer(
-                barcodeValidator = { barcode, imageProxy ->
-                    isWithinScannerFrame(barcode, imageProxy)
-                }
-            ) { barcode ->
-                val rawValue = barcode.rawValue
-                if (rawValue != null) {
-                    onQRCodeScanned(rawValue)
-                }
-            }
-
-            // 建立 ImageAnalysis
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor, qrAnalyzer!!)
-                }
+            imageAnalyzer.setAnalyzer(cameraExecutor, qrAnalyzer)
 
             // 使用 UseCaseGroup 並套用 ViewPort 確保預覽與分析座標一致
             val viewPort = binding.previewView.viewPort
@@ -88,7 +86,7 @@ class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
                 Logger.e(TAG, "Use case binding failed", exc)
             }
 
-        }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     @OptIn(TransformExperimental::class)
@@ -137,18 +135,25 @@ class QRCodeScannerActivity : BaseActivity<ActivityQrcodeScannerBinding>() {
     }
 
     private fun onQRCodeScanned(result: String) {
-        runOnUiThread {
+        viewLifecycleOwner.lifecycleScope.launch {
             Logger.i(TAG, "QR Code Result: $result")
-            Toast.makeText(this, "Scanned:\n$result", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Scanned:\n$result", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun resumeScanning() {
-        qrAnalyzer?.resumeScanning()
+    override fun onPause() {
+        super.onPause()
+        qrAnalyzer.disableScanning()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onResume() {
+        super.onResume()
+        qrAnalyzer.enableScanning()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         cameraExecutor.shutdown()
     }
+
 }
