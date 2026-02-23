@@ -51,7 +51,7 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     }
 
     override fun initLayoutView() {
-        binding.titleBar.setAppTitle(getString(R.string.app_name))
+        binding.titleBar.setAppTitle(getString(R.string.nav_scanner))
         binding.titleBar.setLeftBtnVisibility(false)
     }
 

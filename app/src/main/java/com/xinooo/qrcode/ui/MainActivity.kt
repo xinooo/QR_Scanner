@@ -19,8 +19,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initLayoutView() {
         createBottomNav()
         binding.viewPager.adapter = BasePagerAdapter(this, navList
-        ) { tag, position ->
-            return@BasePagerAdapter QRCodeScannerFragment()
+        ) { id, position ->
+            return@BasePagerAdapter when(id) {
+                NavManager.NavId.HOME -> QRCodeScannerFragment()
+                else -> QRCodeCreateFragment()
+            }
         }
         navMediator.attach()
     }

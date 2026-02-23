@@ -1,5 +1,8 @@
 package com.xinooo.qrcode.core.navigation
 
+import com.xinooo.qrcode.R
+import com.xinooo.qrcode.app.AppMain
+
 object NavManager {
 
     object NavId {
@@ -11,10 +14,10 @@ object NavManager {
 
     fun getNavList(): List<NavConfig> {
         return listOf(
-            NavConfig(NavId.HOME, "掃描", android.R.drawable.ic_menu_camera),
-            NavConfig(NavId.ORDER, "建立", android.R.drawable.ic_menu_add),
-            NavConfig(NavId.MESSAGE, "紀錄", android.R.drawable.ic_menu_recent_history),
-            NavConfig(NavId.PROFILE, "設定", android.R.drawable.ic_menu_preferences)
+            NavConfig(NavId.HOME, AppMain.getAppString(R.string.nav_scanner), android.R.drawable.ic_menu_camera),
+            NavConfig(NavId.ORDER, AppMain.getAppString(R.string.nav_create), android.R.drawable.ic_menu_add),
+            NavConfig(NavId.MESSAGE, AppMain.getAppString(R.string.nav_history), android.R.drawable.ic_menu_recent_history),
+            NavConfig(NavId.PROFILE, AppMain.getAppString(R.string.nav_setting), android.R.drawable.ic_menu_preferences)
         )
     }
 }

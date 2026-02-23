@@ -58,4 +58,7 @@ dependencies {
 
     // ML Kit
     implementation(libs.mlkit.barcode.scanning)
+
+    // ZXing for QR generation
+    implementation(libs.zxing.core)
 }
