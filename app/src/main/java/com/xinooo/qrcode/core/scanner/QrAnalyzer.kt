@@ -1,6 +1,8 @@
-package com.xinooo.qrcode.utils
+package com.xinooo.qrcode.core.scanner
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -10,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class QrAnalyzer(
     private val barcodeValidator: ((Barcode, ImageProxy) -> Boolean),
-    private val onQrDetected: (Barcode) -> Unit,
+    private val onQrDetected: (QrScanResult, Bitmap?) -> Unit,
 ) : ImageAnalysis.Analyzer {
 
     private val scanner = BarcodeScanning.getClient()
@@ -49,15 +51,26 @@ class QrAnalyzer(
                 if (!isValid) return@addOnSuccessListener
 
                 if (scanningLock.compareAndSet(false, true)) {
-                    onQrDetected(barcode)
+                    val bitmap = imageProxy.toBitmap()
+                    val rotatedBitmap = rotateBitmap(bitmap, imageProxy.imageInfo.rotationDegrees)
+                    onQrDetected(QrScanResult.Success(barcode), rotatedBitmap)
                 }
 
             }
             .addOnFailureListener {
-                Logger.e("QrAnalyzer", "Barcode scanning failed", it)
+                onQrDetected(QrScanResult.Error(it), null)
             }
             .addOnCompleteListener {
                 imageProxy.close()
             }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, rotationDegrees: Int): Bitmap {
+        if (rotationDegrees == 0) return bitmap
+        val matrix = Matrix()
+        matrix.postRotate(rotationDegrees.toFloat())
+        return Bitmap.createBitmap(
+            bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+        )
     }
 }

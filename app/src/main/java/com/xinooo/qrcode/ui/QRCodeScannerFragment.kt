@@ -2,6 +2,7 @@ package com.xinooo.qrcode.ui
 
 import android.graphics.RectF
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -19,7 +20,10 @@ import com.webrtc.cc.ui.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.databinding.FragmentQrcodeScannerBinding
 import com.xinooo.qrcode.utils.Logger
-import com.xinooo.qrcode.utils.QrAnalyzer
+import com.xinooo.qrcode.core.scanner.QrAnalyzer
+import com.xinooo.qrcode.core.scanner.QrImageScanner
+import com.xinooo.qrcode.core.scanner.QrScanResult
+import com.xinooo.qrcode.utils.BitmapUtils
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -33,11 +37,8 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
             barcodeValidator = { barcode, imageProxy ->
                 isWithinScannerFrame(barcode, imageProxy)
             }
-        ) { barcode ->
-            val rawValue = barcode.rawValue
-            if (rawValue != null) {
-                onQRCodeScanned(rawValue)
-            }
+        ) { result, bitmap ->
+            handleResult(result)
         }
     }
     private val imageAnalyzer by lazy {
@@ -53,6 +54,7 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     override fun initLayoutView() {
         binding.titleBar.setAppTitle(getString(R.string.nav_scanner))
         binding.titleBar.setLeftBtnVisibility(false)
+        binding.btnImageScan.setOnClickListener { pickImage.launch("image/*") }
     }
 
     override fun initViewData() {
@@ -140,6 +142,38 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
             Toast.makeText(requireContext(), "Scanned:\n$result", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun handleResult(result: QrScanResult) {
+        when (result) {
+            is QrScanResult.Success -> {
+                val rawValue = result.barcode.rawValue
+                if (rawValue != null) {
+                    onQRCodeScanned(rawValue)
+                }
+            }
+            QrScanResult.NotFound -> {
+                Toast.makeText(requireContext(), "找不到 QR Code", Toast.LENGTH_SHORT).show()
+            }
+            is QrScanResult.Error -> {
+                Toast.makeText(requireContext(), "掃描失敗", Toast.LENGTH_SHORT).show()
+                Logger.e(TAG, "掃描失敗", result.exception)
+            }
+        }
+    }
+
+    private val pickImage =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri ?: return@registerForActivityResult
+
+            val bitmap = BitmapUtils.loadBitmapFromUri(requireContext(), uri) ?: run {
+                Toast.makeText(requireContext(), "無法載入圖片", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+
+            QrImageScanner().scan(bitmap) { result ->
+                handleResult(result)
+            }
+        }
 
     override fun onPause() {
         super.onPause()
