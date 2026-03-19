@@ -24,6 +24,7 @@ import com.xinooo.qrcode.core.scanner.QrAnalyzer
 import com.xinooo.qrcode.core.scanner.QrImageScanner
 import com.xinooo.qrcode.core.scanner.QrScanResult
 import com.xinooo.qrcode.utils.BitmapUtils
+import com.xinooo.qrcode.data.QrCodeScanResultRepository
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -45,6 +46,10 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
+    }
+
+    private val qrCodeScanResultRepository by lazy {
+        QrCodeScanResultRepository(requireContext())
     }
 
     override fun getLayoutId(): Int {
@@ -140,6 +145,10 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         viewLifecycleOwner.lifecycleScope.launch {
             Logger.i(TAG, "QR Code Result: $result")
             Toast.makeText(requireContext(), "Scanned:\n$result", Toast.LENGTH_SHORT).show()
+            
+            //保存
+            qrCodeScanResultRepository.insertScanResult(result)
+            Logger.i(TAG, "Saved QR Code Result to DB: $result")
         }
     }
 

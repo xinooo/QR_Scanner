@@ -22,6 +22,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         ) { id, position ->
             return@BasePagerAdapter when(id) {
                 NavManager.NavId.HOME -> QRCodeScannerFragment()
+                NavManager.NavId.MESSAGE -> ScanHistoryFragment()
                 else -> QRCodeCreateFragment()
             }
         }
