@@ -4,10 +4,12 @@ import android.graphics.RectF
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.TorchState
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.TransformExperimental
@@ -52,6 +54,11 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         QrCodeScanResultRepository(requireContext())
     }
 
+    private var camera: Camera? = null
+    private var cameraProvider: ProcessCameraProvider? = null
+    // 紀錄切換頁面前閃光燈是否為開啟狀態
+    private var wasFlashlightOn = false
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_qrcode_scanner
     }
@@ -60,17 +67,20 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         binding.titleBar.setAppTitle(getString(R.string.nav_scanner))
         binding.titleBar.setLeftBtnVisibility(false)
         binding.btnImageScan.setOnClickListener { pickImage.launch("image/*") }
+        
+        binding.btnFlashlight.setOnClickListener {
+            toggleFlashlight()
+        }
     }
 
-    override fun initViewData() {
-        startCamera()
-    }
+    override fun initViewData() {}
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val provider: ProcessCameraProvider = cameraProviderFuture.get()
+            this.cameraProvider = provider
 
             preview.surfaceProvider = binding.previewView.surfaceProvider
 
@@ -87,13 +97,38 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
                 .build()
 
             try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, useCaseGroup)
+                provider.unbindAll()
+                // 使用 viewLifecycleOwner 以確保在 ViewPager 切換時正確釋放資源
+                camera = provider.bindToLifecycle(viewLifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, useCaseGroup)
+                observeFlashlightState()
+
+                // 如果綁定完成時正處於 Resume 且之前是開啟狀態，則恢復閃光燈
+                if (isResumed && wasFlashlightOn) {
+                    camera?.cameraControl?.enableTorch(true)
+                }
             } catch (exc: Exception) {
                 Logger.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    /**
+     * 監聽閃光燈狀態並更新 UI
+     */
+    private fun observeFlashlightState() {
+        camera?.cameraInfo?.torchState?.observe(viewLifecycleOwner) { state ->
+            binding.btnFlashlight.setImageResource(R.drawable.ic_flash)
+            val isOn = state == TorchState.ON
+            val colorRes = if (isOn) R.color.flash_on else R.color.white
+            binding.btnFlashlight.imageTintList = ContextCompat.getColorStateList(requireContext(), colorRes)
+        }
+    }
+
+    private fun toggleFlashlight() {
+        val isTorchOn = camera?.cameraInfo?.torchState?.value == TorchState.ON
+        wasFlashlightOn = !isTorchOn
+        camera?.cameraControl?.enableTorch(wasFlashlightOn)
     }
 
     @OptIn(TransformExperimental::class)
@@ -155,10 +190,7 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     private fun handleResult(result: QrScanResult) {
         when (result) {
             is QrScanResult.Success -> {
-                val rawValue = result.barcode.rawValue
-                if (rawValue != null) {
-                    onQRCodeScanned(rawValue)
-                }
+                result.barcode.rawValue?.let { onQRCodeScanned(it) }
             }
             QrScanResult.NotFound -> {
                 Toast.makeText(requireContext(), "找不到 QR Code", Toast.LENGTH_SHORT).show()
@@ -187,15 +219,29 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     override fun onPause() {
         super.onPause()
         qrAnalyzer.disableScanning()
+        
+        // 1. 記錄當前狀態
+        wasFlashlightOn = camera?.cameraInfo?.torchState?.value == TorchState.ON
+        
+        // 2. 關鍵修正：主動解除所有相機 UseCase 綁定。
+        // 在 ViewPager2 中，這能強制釋放相機資源並關閉閃光燈，避免單純呼叫 enableTorch(false) 被系統緩存忽略。
+        cameraProvider?.unbindAll()
     }
 
     override fun onResume() {
         super.onResume()
         qrAnalyzer.enableScanning()
+        startCamera()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // 銷毀 View 時清除相機引用
+        camera = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         cameraExecutor.shutdown()
     }
 

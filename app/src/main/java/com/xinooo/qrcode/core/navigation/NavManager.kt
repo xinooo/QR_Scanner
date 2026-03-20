@@ -14,10 +14,10 @@ object NavManager {
 
     fun getNavList(): List<NavConfig> {
         return listOf(
-            NavConfig(NavId.HOME, AppMain.getAppString(R.string.nav_scanner), android.R.drawable.ic_menu_camera),
-            NavConfig(NavId.ORDER, AppMain.getAppString(R.string.nav_create), android.R.drawable.ic_menu_add),
-            NavConfig(NavId.MESSAGE, AppMain.getAppString(R.string.nav_history), android.R.drawable.ic_menu_recent_history),
-            NavConfig(NavId.PROFILE, AppMain.getAppString(R.string.nav_setting), android.R.drawable.ic_menu_preferences)
+            NavConfig(NavId.HOME, AppMain.getAppString(R.string.nav_scanner), R.drawable.ic_nav_scanner),
+            NavConfig(NavId.ORDER, AppMain.getAppString(R.string.nav_create), R.drawable.ic_nav_create),
+            NavConfig(NavId.MESSAGE, AppMain.getAppString(R.string.nav_history), R.drawable.ic_nav_history),
+            NavConfig(NavId.PROFILE, AppMain.getAppString(R.string.nav_setting), R.drawable.ic_nav_profile)
         )
     }
 }
