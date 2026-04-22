@@ -137,14 +137,14 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
 
         return try {
             val factory = ImageProxyTransformFactory()
-            // source transform 是基於 imageProxy.cropRect 的
+            // factory.getOutputTransform(imageProxy) 會自動處理 cropRect 引起的偏移
             val source = factory.getOutputTransform(imageProxy)
             val target = binding.previewView.outputTransform ?: return false
             val coordinateTransform = CoordinateTransform(source, target)
 
             val barcodeRectF = RectF(boundingBox)
 
-            // 手動扣除 CropRect 的偏移量，座標才能對齊
+            // ML Kit 座標是相對於整個 Buffer 的，需扣除 cropRect 的偏移才能與 TransformFactory 對齊
             val cropRect = imageProxy.cropRect
             barcodeRectF.offset(-cropRect.left.toFloat(), -cropRect.top.toFloat())
 
@@ -167,8 +167,8 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
                 relativeTop + binding.scannerFrame.height
             )
 
-            // 判斷條碼中心點是否在方框內
-            frameRectF.contains(barcodeRectF.centerX(), barcodeRectF.centerY())
+            // 嚴格判定：條碼矩形必須完全包含在掃描框內
+            frameRectF.contains(barcodeRectF)
 
         } catch (e: Exception) {
             Logger.e(TAG, "Coordinate transform failed", e)

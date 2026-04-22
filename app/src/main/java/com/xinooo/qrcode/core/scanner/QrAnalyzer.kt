@@ -39,7 +39,9 @@ class QrAnalyzer(
             imageProxy.close()
             return
         }
-        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        // 固定傳入 0 度旋轉給 ML Kit，讓其回傳原始 Buffer 座標系下的 boundingBox。
+        // 這樣在 UI 層使用 ImageProxyTransformFactory 轉換時才能正確對齊。
+        val image = InputImage.fromMediaImage(mediaImage, 0)
         scanner.process(image)
             .addOnSuccessListener { barcodes ->
                 if (barcodes.isEmpty()) return@addOnSuccessListener
