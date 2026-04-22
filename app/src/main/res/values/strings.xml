@@ -8,4 +8,13 @@
 
     <string name="generate_hint">輸入文字以產生QR碼</string>
     <string name="generate_confirm">產生</string>
+
+    <!-- Scan Result Dialog -->
+    <string name="scan_result_title">掃描結果</string>
+    <string name="scan_result_copy">複製</string>
+    <string name="scan_result_close">關閉</string>
+    <string name="scan_result_open_web">打開網頁</string>
+    <string name="scan_result_copied">已複製到剪貼簿</string>
+    <string name="scan_result_open_error">無法開啟網頁</string>
+    <string name="scan_result_clipboard_label">QR Code 掃描結果</string>
 </resources>

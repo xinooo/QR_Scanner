@@ -179,11 +179,14 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     private fun onQRCodeScanned(result: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             Logger.i(TAG, "QR Code Result: $result")
-            Toast.makeText(requireContext(), "Scanned:\n$result", Toast.LENGTH_SHORT).show()
-            
-            //保存
+            // 保存到資料庫
             qrCodeScanResultRepository.insertScanResult(result)
             Logger.i(TAG, "Saved QR Code Result to DB: $result")
+            
+            // 呼叫獨立的彈窗類別
+            ScanResultDialog.newInstance(result) {
+                qrAnalyzer.enableScanning()
+            }.show(parentFragmentManager, "ScanResultDialog")
         }
     }
 
