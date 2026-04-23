@@ -1,0 +1,23 @@
+{
+  "root": 100,
+  "data": [
+    {
+      "key": "sound",
+      "id": "播放提示音",
+      "note": "掃描成功後播放提示音",
+      "isCheck": false
+    },
+    {
+      "key": "clipboard",
+      "id": "複製到剪貼板",
+      "note": "掃描成功後自動複製內容",
+      "isCheck": false
+    },
+    {
+      "key": "openweb",
+      "id": "自動打開網頁",
+      "note": "掃描到連結時自動開啟瀏覽器",
+      "isCheck": true
+    }
+  ]
+}

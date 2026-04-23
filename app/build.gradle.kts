@@ -67,4 +67,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler) // Kotlin 專案需用 ksp
+
+    // Gson
+    implementation(libs.gson)
 }

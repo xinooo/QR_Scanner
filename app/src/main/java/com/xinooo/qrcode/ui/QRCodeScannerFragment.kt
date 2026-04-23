@@ -27,6 +27,8 @@ import com.xinooo.qrcode.core.scanner.QrImageScanner
 import com.xinooo.qrcode.core.scanner.QrScanResult
 import com.xinooo.qrcode.utils.BitmapUtils
 import com.xinooo.qrcode.data.QrCodeScanResultRepository
+import com.xinooo.qrcode.data.SettingsManager
+import com.xinooo.qrcode.utils.ScanActionManager
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -73,7 +75,10 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         }
     }
 
-    override fun initViewData() {}
+    override fun initViewData() {
+        // 預先載入設定
+        SettingsManager.loadSettings(requireContext())
+    }
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -179,14 +184,17 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
     private fun onQRCodeScanned(result: String) {
         viewLifecycleOwner.lifecycleScope.launch {
             Logger.i(TAG, "QR Code Result: $result")
-            // 保存到資料庫
+
+            // 1. 保存到資料庫
             qrCodeScanResultRepository.insertScanResult(result)
-            Logger.i(TAG, "Saved QR Code Result to DB: $result")
-            
-            // 呼叫獨立的彈窗類別
+
+            // 2. 先顯示互動對話框 (不阻塞執行緒)
             ScanResultDialog.newInstance(result) {
                 qrAnalyzer.enableScanning()
             }.show(parentFragmentManager, "ScanResultDialog")
+
+            // 3. 呼叫獨立的 Action Manager 執行自動化動作 (聲音、複製、自動開啟)
+            ScanActionManager.executeActions(requireContext(), result)
         }
     }
 
