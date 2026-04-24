@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
-import com.webrtc.cc.ui.BaseFragment
+import com.xinooo.qrcode.core.base.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.databinding.FragmentQrcodeCreateBinding
 import androidx.core.graphics.createBitmap

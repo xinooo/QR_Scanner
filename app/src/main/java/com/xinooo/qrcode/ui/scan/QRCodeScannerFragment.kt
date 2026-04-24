@@ -18,7 +18,7 @@ import androidx.camera.view.transform.ImageProxyTransformFactory
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.mlkit.vision.barcode.common.Barcode
-import com.webrtc.cc.ui.BaseFragment
+import com.xinooo.qrcode.core.base.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.databinding.FragmentQrcodeScannerBinding
 import com.xinooo.qrcode.utils.Logger

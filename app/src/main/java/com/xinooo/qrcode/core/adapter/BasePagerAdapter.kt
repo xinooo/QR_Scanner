@@ -3,7 +3,7 @@ package com.xinooo.qrcode.core.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.webrtc.cc.ui.BaseFragment
+import com.xinooo.qrcode.core.base.BaseFragment
 import com.xinooo.qrcode.core.navigation.NavConfig
 
 class BasePagerAdapter(

@@ -1,6 +1,6 @@
 package com.xinooo.qrcode.ui.setting
 
-import com.webrtc.cc.ui.BaseFragment
+import com.xinooo.qrcode.core.base.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.data.SettingsManager
 import com.xinooo.qrcode.databinding.FragmentSettingsBinding

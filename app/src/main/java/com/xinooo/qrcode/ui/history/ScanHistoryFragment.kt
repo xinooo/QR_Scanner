@@ -1,7 +1,7 @@
 package com.xinooo.qrcode.ui.history
 
 import androidx.lifecycle.lifecycleScope
-import com.webrtc.cc.ui.BaseFragment
+import com.xinooo.qrcode.core.base.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.data.QrCodeScanResultRepository
 import com.xinooo.qrcode.databinding.FragmentScanHistoryBinding

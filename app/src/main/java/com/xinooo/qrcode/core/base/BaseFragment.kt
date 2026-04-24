@@ -1,4 +1,4 @@
-package com.webrtc.cc.ui
+package com.xinooo.qrcode.core.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
