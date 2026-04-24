@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.ui.setting
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

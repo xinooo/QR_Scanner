@@ -8,6 +8,9 @@ import com.xinooo.qrcode.core.adapter.BasePagerAdapter
 import com.xinooo.qrcode.core.navigation.BottomNavViewPagerMediator
 import com.xinooo.qrcode.core.navigation.NavManager
 import com.xinooo.qrcode.databinding.ActivityMainBinding
+import com.xinooo.qrcode.ui.history.ScanHistoryFragment
+import com.xinooo.qrcode.ui.scan.QRCodeScannerFragment
+import com.xinooo.qrcode.ui.setting.SettingsFragment
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 

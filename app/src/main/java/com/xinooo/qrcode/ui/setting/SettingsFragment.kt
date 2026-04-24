@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.ui.setting
 
 import com.webrtc.cc.ui.BaseFragment
 import com.xinooo.qrcode.R

@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.ui.history
 
 import androidx.lifecycle.lifecycleScope
 import com.webrtc.cc.ui.BaseFragment
@@ -20,6 +20,11 @@ class ScanHistoryFragment : BaseFragment<FragmentScanHistoryBinding>() {
         binding.titleBar.setAppTitle(getString(R.string.nav_history))
         binding.titleBar.setLeftBtnVisibility(false)
         binding.recyclerView.adapter = scanResultAdapter
+
+        scanResultAdapter.onItemClick = { result ->
+            val dialog = ScanHistoryDetailDialog.newInstance(result)
+            dialog.show(childFragmentManager, "HistoryDetail")
+        }
 
         // Load Ad
         AdManager.loadBannerAd(binding.adView)

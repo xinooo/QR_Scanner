@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.ui.scan
 
 import android.graphics.RectF
 import android.widget.Toast

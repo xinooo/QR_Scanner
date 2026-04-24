@@ -1,4 +1,4 @@
-package com.xinooo.qrcode.ui
+package com.xinooo.qrcode.ui.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,7 +13,18 @@ import java.util.Locale
 
 class ScanHistoryAdapter : ListAdapter<QrCodeScanResult, ScanHistoryAdapter.ViewHolder>(DiffCallback) {
 
-    class ViewHolder(private val binding: ItemScanHistoryBinding) : RecyclerView.ViewHolder(binding.root) {
+    var onItemClick: ((QrCodeScanResult) -> Unit)? = null
+
+    inner class ViewHolder(private val binding: ItemScanHistoryBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(getItem(position))
+                }
+            }
+        }
+
         fun bind(item: QrCodeScanResult) {
             binding.item = item
             binding.tvTimestamp.text = formatTimestamp(item.timestamp)
