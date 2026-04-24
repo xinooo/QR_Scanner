@@ -13,7 +13,13 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.xinooo.qrcode.utils.AdManager
 
+import android.content.Intent
+import android.view.View
+import com.xinooo.qrcode.utils.FileUtils
+
 class QRCodeCreateFragment : BaseFragment<FragmentQrcodeCreateBinding>() {
+
+    private var currentBitmap: Bitmap? = null
 
     override fun getLayoutId(): Int = R.layout.fragment_qrcode_create
 
@@ -22,11 +28,31 @@ class QRCodeCreateFragment : BaseFragment<FragmentQrcodeCreateBinding>() {
             val content = binding.etContent.text.toString()
             if (content.isNotEmpty()) {
                 val bitmap = generateQRCode(content)
+                currentBitmap = bitmap
                 binding.ivQRCode.setImageBitmap(bitmap)
+                binding.btnShare.visibility = View.VISIBLE
             }
+        }
+
+        binding.btnShare.setOnClickListener {
+            shareQRCode()
         }
         // Load Ad
         AdManager.loadBannerAd(binding.adView)
+    }
+
+    private fun shareQRCode() {
+        currentBitmap?.let { bitmap ->
+            val uri = FileUtils.getShareImageUri(requireContext(), bitmap)
+            uri?.let { shareUri ->
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "image/png"
+                    putExtra(Intent.EXTRA_STREAM, shareUri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)))
+            }
+        }
     }
 
     override fun initViewData() {

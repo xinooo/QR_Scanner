@@ -4,7 +4,34 @@ import android.content.Context
 import java.io.File
 import java.io.IOException
 
+import android.graphics.Bitmap
+import androidx.core.content.FileProvider
+import android.net.Uri
+import java.io.FileOutputStream
+
 object FileUtils {
+
+    /**
+     * 將 Bitmap 儲存至快取並回傳分享 Uri
+     */
+    fun getShareImageUri(context: Context, bitmap: Bitmap): Uri? {
+        val shareFolder = File(context.cacheDir, "shared_images")
+        if (!shareFolder.exists()) shareFolder.mkdirs()
+        
+        val file = File(shareFolder, "share_qrcode.png")
+        if (file.exists()) file.delete()
+
+        return try {
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                out.flush()
+            }
+            FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        } catch (e: IOException) {
+            Logger.e("FileUtils", "Error saving share image", e)
+            null
+        }
+    }
 
     /**
      * 從 Assets 中讀取文字資料
