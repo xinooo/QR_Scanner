@@ -33,6 +33,8 @@ class AppMain: Application() {
     override fun onCreate() {
         super.onCreate()
         app = this
+        // Initialize AdMob
+        com.google.android.gms.ads.MobileAds.initialize(this) {}
     }
 
     fun getHandler() = mHandler

@@ -5,6 +5,7 @@ import com.webrtc.cc.ui.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.data.QrCodeScanResultRepository
 import com.xinooo.qrcode.databinding.FragmentScanHistoryBinding
+import com.xinooo.qrcode.utils.AdManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -19,6 +20,9 @@ class ScanHistoryFragment : BaseFragment<FragmentScanHistoryBinding>() {
         binding.titleBar.setAppTitle(getString(R.string.nav_history))
         binding.titleBar.setLeftBtnVisibility(false)
         binding.recyclerView.adapter = scanResultAdapter
+
+        // Load Ad
+        AdManager.loadBannerAd(binding.adView)
     }
 
     override fun initViewData() {

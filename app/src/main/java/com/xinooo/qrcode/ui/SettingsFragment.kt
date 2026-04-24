@@ -4,6 +4,7 @@ import com.webrtc.cc.ui.BaseFragment
 import com.xinooo.qrcode.R
 import com.xinooo.qrcode.data.SettingsManager
 import com.xinooo.qrcode.databinding.FragmentSettingsBinding
+import com.xinooo.qrcode.utils.AdManager
 
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
@@ -19,6 +20,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         binding.titleBar.setAppTitle(getString(R.string.nav_setting))
         binding.titleBar.setLeftBtnVisibility(false)
         binding.rvSettings.adapter = adapter
+
+        // Load Ad
+        AdManager.loadBannerAd(binding.adView)
     }
 
     override fun initViewData() {

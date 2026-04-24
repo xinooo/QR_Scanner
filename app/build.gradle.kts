@@ -70,4 +70,10 @@ dependencies {
 
     // Gson
     implementation(libs.gson)
+
+    // AdMob
+    implementation(libs.play.services.ads)
+
+    // Guava (Required to resolve conflict between AdMob and CameraX)
+    implementation(libs.guava)
 }

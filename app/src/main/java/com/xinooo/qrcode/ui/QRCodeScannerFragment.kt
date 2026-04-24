@@ -28,6 +28,7 @@ import com.xinooo.qrcode.core.scanner.QrScanResult
 import com.xinooo.qrcode.utils.BitmapUtils
 import com.xinooo.qrcode.data.QrCodeScanResultRepository
 import com.xinooo.qrcode.data.SettingsManager
+import com.xinooo.qrcode.utils.AdManager
 import com.xinooo.qrcode.utils.ScanActionManager
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
@@ -73,6 +74,9 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
         binding.btnFlashlight.setOnClickListener {
             toggleFlashlight()
         }
+
+        // Initialize and load AdView
+        AdManager.loadBannerAd(binding.adView)
     }
 
     override fun initViewData() {

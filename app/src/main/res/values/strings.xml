@@ -17,4 +17,12 @@
     <string name="scan_result_copied">已複製到剪貼簿</string>
     <string name="scan_result_open_error">無法開啟網頁</string>
     <string name="scan_result_clipboard_label">QR Code 掃描結果</string>
+
+    <!-- AdMob IDs -->
+    <string name="admob_app_id">ca-app-pub-7779749898168447~2432206858</string>
+    <string name="admob_banner_unit_id_prod">ca-app-pub-7779749898168447/8806043518</string>
+    <!-- Google Official Test Banner ID -->
+    <string name="admob_banner_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- 當前使用的廣告 ID (開發測試時設為測試 ID) -->
+    <string name="admob_banner_unit_id">@string/admob_banner_unit_id_test</string>
 </resources>

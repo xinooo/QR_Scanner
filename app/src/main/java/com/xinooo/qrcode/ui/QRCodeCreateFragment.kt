@@ -11,6 +11,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.xinooo.qrcode.utils.AdManager
 
 class QRCodeCreateFragment : BaseFragment<FragmentQrcodeCreateBinding>() {
 
@@ -24,6 +25,8 @@ class QRCodeCreateFragment : BaseFragment<FragmentQrcodeCreateBinding>() {
                 binding.ivQRCode.setImageBitmap(bitmap)
             }
         }
+        // Load Ad
+        AdManager.loadBannerAd(binding.adView)
     }
 
     override fun initViewData() {
