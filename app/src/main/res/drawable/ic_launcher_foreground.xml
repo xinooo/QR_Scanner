@@ -1,30 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:endX="85.84757"
-                android:endY="92.4963"
-                android:startX="42.9492"
-                android:startY="49.59793"
-                android:type="linear">
-                <item
-                    android:color="#44000000"
-                    android:offset="0.0" />
-                <item
-                    android:color="#00000000"
-                    android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-    <path
-        android:fillColor="#FFFFFF"
-        android:fillType="nonZero"
-        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
-        android:strokeWidth="1"
-        android:strokeColor="#00000000" />
+    
+    <group 
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.65"
+        android:scaleY="0.65">
+        
+        <!-- 四個角落的掃描框支架 (圓角半徑加大至 8) -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#C91010"
+            android:strokeWidth="7"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M18,34V26c0,-4.4 3.6,-8 8,-8h8" /> <!-- Top Left -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#C91010"
+            android:strokeWidth="7"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M74,18h8c4.4,0 8,3.6 8,8v8" /> <!-- Top Right -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#C91010"
+            android:strokeWidth="7"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M18,74v8c0,4.4 3.6,8 8,8h8" /> <!-- Bottom Left -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#C91010"
+            android:strokeWidth="7"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M74,90h8c4.4,0 8,-3.6 8,-8v-8" /> <!-- Bottom Right -->
+
+        <!-- 巢狀群組縮小中間內容 -->
+        <group
+            android:pivotX="54"
+            android:pivotY="54"
+            android:scaleX="0.85"
+            android:scaleY="0.85">
+
+            <!-- QR Code Finder Patterns -->
+            <path
+                android:fillColor="#000000"
+                android:pathData="M24,24h16v16h-16zM28,28v8h8v-8h-8zM30,30h4v4h-4z" />
+            <path
+                android:fillColor="#000000"
+                android:pathData="M68,24h16v16h-16zM72,28v8h8v-8h-8zM74,30h4v4h-4z" />
+            <path
+                android:fillColor="#000000"
+                android:pathData="M24,68h16v16h-16zM28,72v8h8v-8h-8zM30,74h4v4h-4z" />
+            
+            <!-- Random bits -->
+            <path android:fillColor="#000000" android:pathData="M44,24h4v4h-4zM52,24h4v4h-4zM60,24h4v4h-4zM44,32h4v4h-4zM52,32h8v4h-8zM44,40h4v4h-4zM60,40h4v4h-4z" />
+            <path android:fillColor="#000000" android:pathData="M24,44h4v4h-4zM32,44h4v4h-4zM44,44h12v4h-12zM60,44h8v4h-8zM76,44h8v4h-8z" />
+            <path android:fillColor="#000000" android:pathData="M24,52h8v4h-8zM36,52h4v4h-4zM44,52h4v4h-4zM52,52h12v4h-12zM72,52h12v4h-12z" />
+            <path android:fillColor="#000000" android:pathData="M24,60h4v4h-4zM36,60h12v4h-12zM56,60h12v4h-12zM76,60h8v4h-8z" />
+            <path android:fillColor="#000000" android:pathData="M44,68h4v4h-4zM56,68h8v4h-8zM76,68h8v4h-8z" />
+            <path android:fillColor="#000000" android:pathData="M44,76h12v4h-12zM64,76h4v4h-4zM76,76h8v4h-8z" />
+            <path android:fillColor="#000000" android:pathData="M44,80h4v4h-4zM52,80h8v4h-8zM68,80h16v4h-16z" />
+
+            <!-- Scanning Line -->
+            <path
+                android:fillColor="#C91010"
+                android:pathData="M20,53h68v2h-68z" />
+            <path
+                android:fillColor="#40C91010"
+                android:pathData="M20,51h68v6h-68z" />
+        </group>
+    </group>
 </vector>
