@@ -18,7 +18,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     override fun initLayoutView() {
         binding.titleBar.setAppTitle(getString(R.string.nav_setting))
-        binding.titleBar.setLeftBtnVisibility(false)
+        binding.titleBar.setAppIcon(R.drawable.ic_nav_profile)
         binding.rvSettings.adapter = adapter
 
         // Load Ad

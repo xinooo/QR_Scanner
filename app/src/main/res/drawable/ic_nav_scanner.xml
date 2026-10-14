@@ -1,10 +1,11 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="?attr/colorControlNormal">
-  <path
-      android:fillColor="@android:color/white"
-      android:pathData="M12,17c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM20,4h-3.17L15,2H9L7.17,4H4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2V6c0,-1.1 -0.9,-2 -2,-2zM20,18H4V6h4.05l1.83,-2h4.24l1.83,2H20v12z"/>
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <group android:translateY="960">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M80,-680v-200h200v80H160v120H80ZM80,-80v-200h80v120h120v80H80Zm600,0v-80h120v-120h80v200H680Zm120,-600v-120H680v-80h200v200h-80ZM700,-260h60v60h-60v-60Zm0,-120h60v60h-60v-60Zm-60,60h60v60h-60v-60Zm-60,60h60v60h-60v-60Zm-60,-60h60v60h-60v-60Zm120,-120h60v60h-60v-60Zm-60,60h60v60h-60v-60Zm-60,-60h60v60h-60v-60Zm240,-320v240H520v-240h240ZM440,-440v240H200v-240h240Zm0,-320v240H200v-240h240Zm-60,500v-120H260v120h120Zm0,-320v-120H260v120h120Zm320,0v-120H580v120h120Z" />
+  </group>
 </vector>

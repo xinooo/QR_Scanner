@@ -18,7 +18,7 @@ class ScanHistoryFragment : BaseFragment<FragmentScanHistoryBinding>() {
 
     override fun initLayoutView() {
         binding.titleBar.setAppTitle(getString(R.string.nav_history))
-        binding.titleBar.setLeftBtnVisibility(false)
+        binding.titleBar.setAppIcon(R.drawable.ic_nav_history)
         binding.recyclerView.adapter = scanResultAdapter
 
         scanResultAdapter.onItemClick = { result ->

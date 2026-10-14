@@ -5,4 +5,17 @@
     <color name="primary">#6200EE</color>
     <color name="grey_600">#757575</color>
     <color name="flash_on">#FFEB3B</color>
+
+    <!-- Stitch: Pastel Sky Softness bottom navigation -->
+    <color name="bottom_nav_surface">#F2FFFFFF</color>
+    <color name="bottom_nav_active_container">#68B4F8</color>
+    <color name="bottom_nav_active_content">#00456F</color>
+    <color name="bottom_nav_inactive_content">#707881</color>
+    <color name="bottom_nav_ripple">#3368B4F8</color>
+
+    <!-- Stitch: common page header -->
+    <color name="common_title_bar_surface">#E6F8F9FF</color>
+    <color name="common_title_bar_icon_container">#4D68B4F8</color>
+    <color name="common_title_bar_icon">#00639C</color>
+    <color name="common_title_bar_text">#0A1C30</color>
 </resources>

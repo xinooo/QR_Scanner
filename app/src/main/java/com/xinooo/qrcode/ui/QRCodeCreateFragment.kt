@@ -57,7 +57,7 @@ class QRCodeCreateFragment : BaseFragment<FragmentQrcodeCreateBinding>() {
 
     override fun initViewData() {
         binding.titleBar.setAppTitle(getString(R.string.nav_create))
-        binding.titleBar.setLeftBtnVisibility(false)
+        binding.titleBar.setAppIcon(R.drawable.ic_nav_create)
     }
 
     private fun generateQRCode(content: String): Bitmap {

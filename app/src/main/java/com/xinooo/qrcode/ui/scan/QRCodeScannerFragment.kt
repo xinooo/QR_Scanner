@@ -68,7 +68,7 @@ class QRCodeScannerFragment: BaseFragment<FragmentQrcodeScannerBinding>() {
 
     override fun initLayoutView() {
         binding.titleBar.setAppTitle(getString(R.string.nav_scanner))
-        binding.titleBar.setLeftBtnVisibility(false)
+        binding.titleBar.setAppIcon(R.drawable.ic_nav_scanner)
         binding.btnImageScan.setOnClickListener { pickImage.launch("image/*") }
         
         binding.btnFlashlight.setOnClickListener {
