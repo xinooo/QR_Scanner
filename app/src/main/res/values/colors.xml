@@ -18,4 +18,12 @@
     <color name="common_title_bar_icon_container">#4D68B4F8</color>
     <color name="common_title_bar_icon">#00639C</color>
     <color name="common_title_bar_text">#0A1C30</color>
+
+    <!-- Stitch: settings screen -->
+    <color name="settings_surface">#F8F9FF</color>
+    <color name="settings_card_surface">#FFFFFF</color>
+    <color name="settings_text_primary">#0A1C30</color>
+    <color name="settings_text_secondary">#404750</color>
+    <color name="settings_text_outline">#707881</color>
+    <color name="settings_switch_track_off">#E5EEFF</color>
 </resources>

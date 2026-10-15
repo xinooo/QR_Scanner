@@ -3,6 +3,7 @@ package com.xinooo.qrcode.ui.setting
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.xinooo.qrcode.R
 import com.xinooo.qrcode.data.SettingItem
 import com.xinooo.qrcode.databinding.ItemSettingBinding
 
@@ -20,6 +21,14 @@ class SettingsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+        holder.binding.ivIcon.setImageResource(
+            when (item.key) {
+                "sound" -> R.mipmap.setting_sound
+                "clipboard" -> R.mipmap.setting_clipboard
+                "openweb" -> R.mipmap.setting_open_web
+                else -> R.drawable.ic_nav_profile
+            }
+        )
         holder.binding.tvId.text = item.id
         holder.binding.tvNote.text = item.note
         
