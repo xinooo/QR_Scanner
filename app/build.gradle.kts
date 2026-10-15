@@ -65,8 +65,8 @@ dependencies {
     // ML Kit
     implementation(libs.mlkit.barcode.scanning)
 
-    // ZXing for QR generation
-    implementation(libs.zxing.core)
+    // QR generation
+    implementation(libs.qrcode.kotlin)
 
     // Room
     implementation(libs.androidx.room.runtime)

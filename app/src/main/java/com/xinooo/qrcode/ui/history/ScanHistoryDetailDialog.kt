@@ -49,7 +49,7 @@ class ScanHistoryDetailDialog : BaseDialogFragment<DialogHistoryDetailBinding>()
         binding.result = scanResult
 
         scanResult?.let {
-            val bitmap = BitmapUtils.createQrCodeBitmap(it.result)
+            val bitmap = BitmapUtils.createQrCodeBitmap(requireContext(), it.result)
             binding.ivQrCode.setImageBitmap(bitmap)
         }
     }
